@@ -26,6 +26,7 @@ type valueTypeMagazines = {
 function App() {
   const [ text, setText ] = useState('');
   const [append, setAppend] = useState(false);
+  const [appendMag, setAppendMag] = useState(false);
 
   const [data, setData] = useState<valueType[]>([]);
   const [dataBooks, setDataBooks] = useState<valueTypeBooks[]>([]);
@@ -231,43 +232,17 @@ function App() {
 
     // console.log(dataBooks)
 
-    function compare_to_sort(x: { title: number; },y: { title: number; }) {
-        if (x.title < y.title)
-            return -1;
-        if (x.title > y.title)
-            return 1;
-        return 0;
-    }
-
     const sortHere = () => {
-        const db = dataBooks;
-        const dm = dataMagazines;
-        const mergedArr = Array.prototype.push.apply(db,dm);
+        const db = dataBooks.slice(0);
+        const dm = dataMagazines.slice(0);
+        Array.prototype.push.apply(db,dm);
         const sortedData = db?.sort((a, b) => (a?.title > b?.title) ? 1 : -1);
         setSortedBooks(sortedData);
         // console.log(db)
     }
 
-    // const write = async (fields, data) => {
-    //     // output file in the same folder
-    //     const filename = fetch( './authors.csv' )
-    //     .then( response => response.text() )
-    //     .then( responseText => {
-    //         processData(responseText);
-    //         return setText( responseText);
-    //     })
-    //     let rows;
-    //     // If file doesn't exist, we will create new file and add rows with headers.    
-      
-    //         // Rows without headers.
-    //     rows = json2csv(data, { header: false });
-        
-    
-    //     // Append file function can create new file too.
-    //     fs.appendFileSync(filename, rows);
-    //     // Always add new line if file already exists.
-    //     fs.appendFileSync(filename, "\r\n");
-    // }
+    console.log(soretedBooks,dataBooks)
+
 
     const appendHere = () => {
         let fields = ['title', 'isbn', 'authors','description'];
@@ -284,8 +259,23 @@ function App() {
     setAppend(true);
   
     }
+    const appendMagHere = () => {
+        let fields = ['title', 'isbn', 'authors','publishedAt'];
+    let dataCheck = {
+        title: 'The Immortals of Meluha',
+        isbn: '2254--2222-5555',
+        authors: 'Amish Tripathi',
+        publishedAt: '10/12/2021'
+    };
+    
+    // write(fields,dataCheck);
+    let csvdata = ([...dataMagazines,dataCheck]);
+    setDataMagazines(csvdata);
+    setAppendMag(true);
+  
+    }
 
-    console.log(dataBooks)
+    // console.log(dataBooks)
    
     return (
         <div>
@@ -424,10 +414,18 @@ function App() {
             }
             </div>
             <div style={{marginLeft:40,marginBottom:40}}>
-            <button  onClick={()=> appendHere()}>Append new line</button>
+            <button  onClick={()=> appendHere()}>Append new line to book</button>
             {
                 append ?              
                     <CSVDownload data={dataBooks} target="_blank" /> : null
+                 
+            }
+            </div>
+            <div style={{marginLeft:40,marginBottom:40}}>
+            <button  onClick={()=> appendMagHere()}>Append new line to author</button>
+            {
+                appendMag ?              
+                    <CSVDownload data={dataMagazines} target="_blank" /> : null
                  
             }
             </div>
